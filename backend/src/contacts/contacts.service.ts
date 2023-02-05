@@ -17,7 +17,6 @@ export class ContactsService {
     const client = await this.clientsService.findOne(clientId);
     const contact = await this.contactModel.create({
       ...contactData,
-      owner: clientId,
     });
     if (!client.contacts) {
       client.contacts = [];
@@ -35,11 +34,9 @@ export class ContactsService {
   async findOne(clientId: string, contactId: string) {
     const client = await this.clientsService.findOne(clientId);
 
-    const contactExists = client.contacts?.some(
-      (contact: Contact & Required<{ _id: ObjectId }>) => {
-        return contact._id.toString() === contactId;
-      },
-    );
+    const contactExists = client.contacts?.some((contact) => {
+      return contact._id.toString() === contactId;
+    });
 
     if (!contactExists) {
       throw new NotFoundException();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   Controller,
   Get,
@@ -8,36 +9,57 @@ import {
   Delete,
   UseGuards,
   Req,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  SerializeOptions,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
 import { ContactsService } from './contacts.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
+import { ContactDocument } from './schemas/contact.schema';
+import { ContactSerializer } from './serializers/contact.serializer';
 
 @Controller('contacts')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ClassSerializerInterceptor)
+@SerializeOptions({ excludeExtraneousValues: true })
 export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}
 
   @Post()
-  create(@Body() createContactDto: CreateContactDto, @Req() req: Request) {
+  async create(
+    @Body() createContactDto: CreateContactDto,
+    @Req() req: Request,
+  ) {
     if (req.user) {
-      return this.contactsService.create(req.user.sub, createContactDto);
+      const contact = await this.contactsService.create(
+        req.user.sub,
+        createContactDto,
+      );
+      return new ContactSerializer(contact.toObject());
     }
   }
 
   @Get()
-  findAll(@Req() req: Request) {
+  async findAll(@Req() req: Request) {
     if (req.user) {
-      return this.contactsService.findAll(req.user?.sub);
+      const contacts = await this.contactsService.findAll(req.user?.sub);
+      if (contacts) {
+        return contacts.map(
+          (contact: ContactDocument) =>
+            new ContactSerializer(contact.toObject()),
+        );
+      }
     }
   }
 
   @Get(':id')
-  findOne(@Req() req: Request, @Param('id') id: string) {
+  async findOne(@Req() req: Request, @Param('id') id: string) {
     if (req.user) {
-      return this.contactsService.findOne(req.user.sub, id);
+      const contact = await this.contactsService.findOne(req.user.sub, id);
+      return new ContactSerializer(contact!.toObject());
     }
   }
 
