@@ -1,15 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { Contact } from 'src/contacts/schemas/contact.schema';
+import { ContactDocument } from 'src/contacts/schemas/contact.schema';
 
 export type ClientDocument = HydratedDocument<Client>;
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toObject: { virtuals: true } })
 export class Client {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   email: string;
 
   @Prop({ required: true })
@@ -21,7 +21,11 @@ export class Client {
   @Prop({
     type: [{ type: Types.ObjectId, ref: 'Contact' }],
   })
-  contacts?: Contact[];
+  contacts?: ContactDocument[];
 }
 
 export const ClientSchema = SchemaFactory.createForClass(Client);
+
+ClientSchema.virtual('id').get(function (this: ClientDocument) {
+  return this._id.toString();
+});
