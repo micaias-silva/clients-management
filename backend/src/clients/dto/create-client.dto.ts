@@ -11,4 +11,7 @@ export class CreateClientDto {
 
   @IsPhoneNumber('BR')
   phoneNumber: string;
+
+  @IsDefined()
+  password: string;
 }
