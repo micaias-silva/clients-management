@@ -1,0 +1,29 @@
+.contact-card {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--color-white);
+  padding: 10px;
+  margin: 8px 0;
+  cursor: pointer;
+  border: transparent solid 2px;
+  border-radius: 5px;
+}
+
+.contact-card:hover {
+  border: var(--color-blue) solid 2px;
+}
+
+.contact-card * {
+  display: inline;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .hide-mobile {
+    display: none;
+  }
+  .contact-card {
+    display: block;
+  }
+}
