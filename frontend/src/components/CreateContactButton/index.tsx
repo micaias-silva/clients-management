@@ -5,15 +5,8 @@ import { useState } from "react";
 import CreateContactForm from "../CreateContactForm";
 import ReactModal from "react-modal";
 
-const CreateConctact = () => {
+const CreateConctactButton = () => {
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
-
-  const customStyles = {
-    content: {},
-    "@media (max-width: 600px)": {
-      width: "90%",
-    },
-  };
 
   return (
     <div>
@@ -29,10 +22,10 @@ const CreateConctact = () => {
         onRequestClose={() => setIsOpen(false)}
         overlayClassName="modal-overlay"
       >
-        <CreateContactForm />
+        <CreateContactForm closeModal={() => setIsOpen(false)} />
       </ReactModal>
     </div>
   );
 };
 
-export default CreateConctact;
+export default CreateConctactButton;
