@@ -6,6 +6,7 @@ import ContactCard from "../../components/ContatcCard";
 import SearchBar from "../../components/SearchBar";
 import CreateConctactButton from "../../components/CreateContactButton";
 import { UpdateContext } from "../../providers/update";
+import LogoutButton from "../../components/LogoutButton";
 
 const HomePage = () => {
   const tokenCtx = useContext(TokenContext);
@@ -29,6 +30,7 @@ const HomePage = () => {
         <Redirect to="/login" />
       ) : (
         <main>
+          <LogoutButton />
           <CreateConctactButton />
           <SearchBar baseArray={contactsList} setList={setShowedList} />
           {showedList.map((contact) => (
