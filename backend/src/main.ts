@@ -1,6 +1,5 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { MongooseError } from 'mongoose';
 import { AppModule } from './app.module';
 import { MongoExceptionFilter } from './filters/mongo-exception.filter';
 import { MongooseExceptionFilter } from './filters/mongoose-exception.filter';
