@@ -1,14 +1,15 @@
+import "./style.css";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import backendApi from "../../services/backendApi";
-import { AxiosError } from "axios";
 import { useContext } from "react";
 import { TokenContext } from "../../providers/token";
 import { Redirect } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
-  const ctx = useContext(TokenContext);
+  const tokenCtx = useContext(TokenContext);
 
   const loginSchema = yup.object().shape({
     email: yup
@@ -27,21 +28,29 @@ const LoginPage = () => {
   });
 
   const onSubmitFunction = async (data: any) => {
-    const response = await backendApi.post("/auth/login", data);
+    const response = await backendApi
+      .post("/auth/login", data)
+      .then((res) => res)
+      .catch(() => {
+        toast.error("Email/Senha Inválidos");
+      });
 
-    const token = response.data.accessToken;
-    if (token) {
-      ctx.setToken("Bearer " + token);
-      localStorage.setItem("token", "Bearer " + token);
+    if (response) {
+      const token = response.data.accessToken;
+      if (token) {
+        tokenCtx.setToken("Bearer " + token);
+        localStorage.setItem("token", "Bearer " + token);
+      }
     }
   };
 
   return (
-    <div>
-      {ctx.token ? (
+    <div className="login-container">
+      {tokenCtx.token ? (
         <Redirect to="/" />
       ) : (
-        <form onSubmit={handleSubmit(onSubmitFunction)}>
+        <form className="login-form" onSubmit={handleSubmit(onSubmitFunction)}>
+          <h3>Login</h3>
           <label htmlFor="email">
             Email
             <span>
@@ -66,6 +75,9 @@ const LoginPage = () => {
             {...register("password")}
             placeholder="Insira sua senha"
           />
+          <p>
+            Não possui uma conta? <a href="/register">Cadastre-se</a>
+          </p>
           <button type="submit">Fazer Login</button>
         </form>
       )}
