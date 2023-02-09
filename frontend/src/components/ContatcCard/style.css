@@ -16,7 +16,7 @@
 
 .contact-card * {
   display: inline;
-  width: 100%;
+  width: fit-content;
 }
 
 @media (max-width: 600px) {
@@ -26,4 +26,25 @@
   .contact-card {
     display: block;
   }
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  padding: 0 5px;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+
+.contact-info p,
+.contact-info a {
+  display: block;
+  padding: 10px;
+  border: none;
+  border-bottom: #2d5bd1 2px solid;
+  width: 100%;
+  max-width: 100%;
+  margin: 10px 0;
 }
