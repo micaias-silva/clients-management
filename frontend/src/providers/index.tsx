@@ -1,12 +1,17 @@
 import { ReactNode } from "react";
 import { TokenProvider } from "./token";
+import { UpdateProvider } from "./update";
 
 interface ProvidersProps {
   children: ReactNode;
 }
 
 const Providers: React.FC<ProvidersProps> = ({ children }) => {
-  return <TokenProvider>{children}</TokenProvider>;
+  return (
+    <TokenProvider>
+      <UpdateProvider>{children}</UpdateProvider>
+    </TokenProvider>
+  );
 };
 
 export default Providers;
