@@ -1,4 +1,5 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
+import backendApi from "../../services/backendApi";
 
 const initial: string | null =
   localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -9,7 +10,7 @@ interface TokenProviderProps {
 
 interface ContextValueProps {
   token: string | null;
-  setToken: (newToken: string) => void;
+  setToken: (newToken: string | null) => void;
 }
 
 export const TokenContext = createContext<ContextValueProps>({
@@ -19,6 +20,19 @@ export const TokenContext = createContext<ContextValueProps>({
 
 export const TokenProvider: React.FC<TokenProviderProps> = ({ children }) => {
   const [token, setToken] = useState(initial);
+
+  const validateToken = async () => {
+    await backendApi
+      .post("/auth/validate", {}, { headers: { Authorization: token } })
+      .then((res) => res.data)
+      .catch(() => {
+        localStorage.removeItem("token");
+        setToken(null);
+      });
+  };
+  useEffect(() => {
+    validateToken();
+  });
 
   return (
     <TokenContext.Provider value={{ token, setToken }}>
