@@ -28,13 +28,13 @@ const HomePage = () => {
       {!tokenCtx.token ? (
         <Redirect to="/login" />
       ) : (
-        <section>
+        <main>
           <CreateConctactButton />
           <SearchBar baseArray={contactsList} setList={setShowedList} />
           {showedList.map((contact) => (
             <ContactCard key={contact.id} {...contact} />
           ))}
-        </section>
+        </main>
       )}
     </div>
   );
